@@ -59,6 +59,28 @@ app.get("/auth/patreon/callback", passport.authenticate("patreon", { failureRedi
 });
 ```
 
+#### Additional fields
+
+If you need additional fields in the user profile (like email) you can provide them as an array in a profileFileds parameter of the Strategy option.
+The list of [available fileds](https://docs.patreon.com/#get-api-oauth2-v2-identity).
+
+```javascript
+passport.use(new patreonStrategy({
+    clientID: "098f6bcd4621d373cade4e832627b4f6",
+    clientSecret: "4eb20288afaed97e82bde371260db8d8",
+    callbackURL: "http://127.0.0.1:3000/auth/patreon/callback",
+    scope: "users",
+    profileFIelds: ['email']
+  },
+  function(accessToken, refreshToken, profile, done) {
+    // Suppose we are using mongo..
+    User.findOrCreate({ email: profile.__json.attributes.email }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));
+```
+
 ## Example
 
 ```javascript
